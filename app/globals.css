@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #07080d;
+  --panel: rgba(14, 17, 26, 0.78);
+  --panel-strong: rgba(19, 23, 35, 0.94);
+  --line: rgba(255, 255, 255, 0.095);
+  --text: #f7fbff;
+  --muted: rgba(247, 251, 255, 0.6);
+  --faint: rgba(247, 251, 255, 0.34);
+  --mint: #8cffd2;
+  --blue: #78d8ff;
+  --violet: #b8a2ff;
+  --amber: #ffe28a;
+  --rose: #ff7aa8;
+  --lime: #c6ff6b;
+  --cyan: #67e8f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+@layer utilities {
+  .glass {
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.026)),
+      var(--panel);
+    box-shadow:
+      0 24px 80px rgba(0,0,0,0.38),
+      0 0 0 1px rgba(255,255,255,0.025),
+      inset 0 1px 0 rgba(255,255,255,0.075);
+    backdrop-filter: blur(28px) saturate(1.12);
+  }
+
+  .surface-grid {
+    background-image:
+      radial-gradient(circle at 12% -10%, rgba(103, 232, 249, 0.16), transparent 34%),
+      radial-gradient(circle at 82% 2%, rgba(184, 162, 255, 0.13), transparent 30%),
+      radial-gradient(circle at 52% 105%, rgba(198, 255, 107, 0.08), transparent 32%),
+      linear-gradient(rgba(255,255,255,0.026) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.026) 1px, transparent 1px);
+    background-size: auto, auto, auto, 48px 48px, 48px 48px;
+  }
+
+  .premium-ring {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 16px 48px rgba(0,0,0,0.28),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .quiet-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .quiet-scroll::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
