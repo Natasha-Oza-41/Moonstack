@@ -36,9 +36,11 @@ export function CalendarView() {
             const dayTasks = tasks.filter((task) => task.date === day);
             const done = dayTasks.filter((task) => task.done).length;
             const intensity = done >= 3 ? "bg-emerald-200 shadow-[0_0_18px_rgba(110,231,183,.35)]" : done === 2 ? "bg-emerald-200/70" : done === 1 ? "bg-emerald-200/38" : "bg-white/[0.055]";
+            const dayNumber = new Date(`${day}T00:00:00`).getDate();
             return (
-              <button key={day} onClick={() => setSelected(day)} title={`${label(day)}: ${done} done`} className={`aspect-square rounded-xl border text-xs transition hover:scale-[1.03] ${selected === day ? "border-cyan-200/60" : "border-white/[0.06]"} ${intensity}`}>
+              <button key={day} onClick={() => setSelected(day)} title={`${label(day)}: ${done} done`} className={`grid aspect-square place-items-center rounded-xl border text-xs font-medium transition hover:scale-[1.03] ${selected === day ? "border-cyan-200/60 ring-2 ring-cyan-200/20" : "border-white/[0.06]"} ${intensity}`}>
                 <span className="sr-only">{label(day)}</span>
+                <span className={done > 1 ? "text-slate-950" : "text-white/72"}>{dayNumber}</span>
               </button>
             );
           })}
