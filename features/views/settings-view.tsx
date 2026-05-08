@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, KeyRound, Save, Send } from "lucide-react";
+import { CheckCircle2, KeyRound, Moon, Save, Send, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Card, PrimaryButton } from "@/components/ui/primitives";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
@@ -15,6 +15,7 @@ export function SettingsView() {
   const [githubProfile, setGithubProfile] = useState(settings.githubProfile);
   const [dsaRepoUrl, setDsaRepoUrl] = useState(settings.dsaRepoUrl);
   const [dsaBranch, setDsaBranch] = useState(settings.dsaBranch);
+  const [theme, setTheme] = useState<"dark" | "light">(settings.theme || "dark");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -101,8 +102,29 @@ export function SettingsView() {
     setStatus("Repository target saved. The GitHub token stays server-side as GITHUB_TOKEN.");
   }
 
+  function saveTheme(nextTheme: "dark" | "light") {
+    setTheme(nextTheme);
+    updateSettings({ theme: nextTheme });
+    setStatus(`${nextTheme === "dark" ? "Dark" : "Light"} mode applied.`);
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-5">
+      <Card className="p-5">
+        <h2 className="text-2xl font-semibold">Appearance</h2>
+        <p className="mt-2 text-sm text-white/42">
+          Choose a calmer pastel light mode or the default dark workspace.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <button type="button" onClick={() => saveTheme("dark")} className={theme === "dark" ? "inline-flex items-center gap-2 rounded-xl border border-cyan-200/25 bg-cyan-200/12 px-4 py-3 text-sm text-cyan-100" : "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/68"}>
+            <Moon size={16} /> Dark mode
+          </button>
+          <button type="button" onClick={() => saveTheme("light")} className={theme === "light" ? "inline-flex items-center gap-2 rounded-xl border border-amber-300/30 bg-amber-200/20 px-4 py-3 text-sm text-amber-100" : "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/68"}>
+            <Sun size={16} /> Light mode
+          </button>
+        </div>
+      </Card>
+
       <Card className="p-5">
         <h2 className="text-2xl font-semibold">Account Profile</h2>
         <p className="mt-2 text-sm text-white/42">

@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, GitCommitHorizontal, Rocket, Save } from "lucide-react";
+import { ExternalLink, FolderPlus, GitCommitHorizontal, Rocket, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge, Button, Card, PrimaryButton, Progress } from "@/components/ui/primitives";
 import { useMoonstackStore } from "@/store/moonstack-store";
@@ -8,6 +8,8 @@ import { useMoonstackStore } from "@/store/moonstack-store";
 export function ProjectsView() {
   const { projects, addProject, updateProject } = useMoonstackStore();
   const [activeProjectId, setActiveProjectId] = useState(projects[0]?.id || "");
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [toast, setToast] = useState("");
   const activeProject = projects.find((project) => project.id === activeProjectId) || projects[0];
 
   useEffect(() => {
@@ -16,6 +18,7 @@ export function ProjectsView() {
 
   function createProject() {
     addProject();
+    setToast("Project created.");
     window.setTimeout(() => {
       const next = useMoonstackStore.getState().projects[0];
       if (next) setActiveProjectId(next.id);
@@ -26,23 +29,33 @@ export function ProjectsView() {
     if (!activeProject) return;
     const readme = activeProject.readme || `# ${activeProject.name}\n\n${activeProject.architecture}\n\n## Stack\n${activeProject.stack.map((item) => `- ${item}`).join("\n")}`;
     navigator.clipboard.writeText(readme);
+    setToast("README copied.");
   }
 
   return (
     <div className="space-y-6">
-      <Card className="p-5">
+      {toast && <div className="toast-pop fixed right-5 top-5 z-50 rounded-2xl border border-emerald-300/20 bg-emerald-300/12 px-4 py-3 text-sm text-emerald-100 shadow-2xl">{toast}</div>}
+      <section className="pastel-panel rounded-[1.35rem] p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <Badge tone="mint">Builder OS</Badge>
-            <h2 className="mt-4 text-3xl font-semibold">Turn projects into portfolio proof.</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/42">Architecture, stack, docs, README generation, bug logs, deployment state, and GitHub proof in one system.</p>
+            <h2 className="mt-4 text-3xl font-semibold">Launchpad</h2>
+            <p className="mt-2 max-w-2xl text-sm text-white/42">Add an existing project or create a new one, then track proof, docs, deploy state and next milestone.</p>
           </div>
-          <PrimaryButton onClick={createProject}><Rocket size={16} /> New project</PrimaryButton>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => setMode("existing")} className={mode === "existing" ? "inline-flex items-center gap-2 rounded-xl border border-emerald-300/25 bg-emerald-300/12 px-4 py-2 text-sm text-emerald-100" : "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/66"}>
+              <FolderPlus size={16} /> Existing project
+            </button>
+            <PrimaryButton onClick={() => {
+              setMode("new");
+              createProject();
+            }}><Rocket size={16} /> Create new</PrimaryButton>
+          </div>
         </div>
-      </Card>
+      </section>
 
       <div className="grid gap-5 xl:grid-cols-[340px_1fr]">
-        <Card className="p-4">
+        <section className="pastel-panel rounded-[1.35rem] p-4">
           <h3 className="px-1 font-semibold">Projects</h3>
           <div className="mt-4 space-y-2">
             {projects.map((project) => (
@@ -55,10 +68,10 @@ export function ProjectsView() {
               </button>
             ))}
           </div>
-        </Card>
+        </section>
 
         {activeProject && (
-          <Card className="p-5">
+          <section className="pastel-panel rounded-[1.35rem] p-5">
             <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
               <div>
                 <input value={activeProject.name} onChange={(event) => updateProject(activeProject.id, { name: event.target.value })} className="w-full bg-transparent text-2xl font-semibold outline-none focus:text-emerald-100" />
@@ -108,7 +121,7 @@ export function ProjectsView() {
               <input value={activeProject.nextMilestone} onChange={(event) => updateProject(activeProject.id, { nextMilestone: event.target.value })} className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm outline-none focus:border-emerald-300/35" />
             </label>
             <div className="mt-4 inline-flex items-center gap-2 text-xs text-white/38"><Save size={14} /> Saved in Moonstack state. Use Settings sync after Supabase migration is applied.</div>
-          </Card>
+          </section>
         )}
       </div>
     </div>

@@ -2,13 +2,13 @@
 
 import { Bike, Dumbbell, Moon, Save, Smile } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Badge, Card, PrimaryButton, Progress } from "@/components/ui/primitives";
+import { Badge, PrimaryButton, Progress } from "@/components/ui/primitives";
 import { useMoonstackStore } from "@/store/moonstack-store";
 
 const today = new Date().toISOString().slice(0, 10);
 
 export function HealthView() {
-  const { healthLogs, addHealthLog } = useMoonstackStore();
+  const { healthLogs, tasks, addHealthLog } = useMoonstackStore();
   const current = healthLogs.find((log) => log.date === today) || healthLogs[0];
   const [date, setDate] = useState(current?.date || today);
   const [mood, setMood] = useState(current?.mood || "Focused");
@@ -20,6 +20,10 @@ export function HealthView() {
   const recovery = Math.min(100, Math.round((sleepHours / 8) * 70 + Math.min(waterGlasses, 8) * 3.75));
   const load = useMemo(() => Math.min(100, 35 + activities.split(",").filter(Boolean).length * 12), [activities]);
   const consistency = Math.min(100, healthLogs.length * 12);
+  const todayTasks = tasks.filter((task) => task.date === date);
+  const completedTasks = todayTasks.filter((task) => task.done).length;
+  const focusScore = Math.min(100, Math.round(recovery * 0.45 + completedTasks * 18 + Math.max(0, 30 - load * 0.2)));
+  const insight = focusScore > 75 ? "Good execution day. Keep the next block medium sized." : focusScore > 45 ? "Usable energy. Pick one high-value task and avoid adding extra load." : "Low recovery signal. Prefer revision, notes, or lighter admin work.";
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -28,7 +32,7 @@ export function HealthView() {
 
   return (
     <div className="grid gap-5 xl:grid-cols-[1fr_380px]">
-      <Card className="p-5">
+      <section className="pastel-panel rounded-[1.35rem] p-5">
         <Badge tone="mint">Energy System</Badge>
         <h2 className="mt-4 text-3xl font-semibold">Track the human behind the work.</h2>
         <form onSubmit={submit} className="mt-6 grid gap-4">
@@ -62,11 +66,16 @@ export function HealthView() {
           </label>
           <PrimaryButton type="submit" className="w-fit"><Save size={15} /> Save energy log</PrimaryButton>
         </form>
-      </Card>
+      </section>
 
       <div className="space-y-5">
-        <Card className="p-5">
-          <h3 className="font-semibold">Today</h3>
+        <section className="pastel-panel rounded-[1.35rem] p-5">
+          <h3 className="font-semibold">{new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(new Date(`${date}T00:00:00`))}</h3>
+          <div className="mt-4 rounded-2xl border border-cyan-200/14 bg-cyan-200/8 p-4">
+            <div className="text-3xl font-bold text-cyan-100">{focusScore}%</div>
+            <div className="mt-1 text-sm text-white/44">live focus score</div>
+            <p className="mt-3 text-sm leading-6 text-white/62">{insight}</p>
+          </div>
           <div className="mt-5 grid gap-3">
             {[
               ["Mood", mood, Smile],
@@ -81,16 +90,34 @@ export function HealthView() {
               </div>
             ))}
           </div>
-        </Card>
-        <Card className="p-5">
+        </section>
+        <section className="pastel-panel rounded-[1.35rem] p-5">
           <h3 className="font-semibold">Burnout Guard</h3>
-          <p className="mt-2 text-sm text-white/42">Computed from your current health logs.</p>
+          <p className="mt-2 text-sm text-white/42">Computed from selected date energy plus planner completion.</p>
           <div className="mt-6 space-y-5">
             <div><div className="mb-2 flex justify-between text-sm"><span>Recovery</span><span>{recovery}%</span></div><Progress value={recovery} /></div>
             <div><div className="mb-2 flex justify-between text-sm"><span>Load</span><span>{load}%</span></div><Progress value={load} color="var(--amber)" /></div>
             <div><div className="mb-2 flex justify-between text-sm"><span>Consistency</span><span>{consistency}%</span></div><Progress value={consistency} color="var(--blue)" /></div>
           </div>
-        </Card>
+        </section>
+        <section className="pastel-panel rounded-[1.35rem] p-5">
+          <h3 className="font-semibold">Recent logs</h3>
+          <div className="mt-4 space-y-2">
+            {healthLogs.slice(0, 5).map((log) => (
+              <button key={log.id} onClick={() => {
+                setDate(log.date);
+                setMood(log.mood);
+                setSleepHours(log.sleepHours);
+                setWaterGlasses(log.waterGlasses);
+                setActivities(log.activities);
+                setNotes(log.notes);
+              }} className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3 text-left text-sm hover:bg-white/[0.06]">
+                <div className="font-medium">{log.date} - {log.mood}</div>
+                <div className="mt-1 text-xs text-white/38">{log.sleepHours}h sleep, {log.waterGlasses} water</div>
+              </button>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

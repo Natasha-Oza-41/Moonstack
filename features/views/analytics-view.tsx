@@ -3,7 +3,7 @@
 import { Activity, Brain, Flame, GitCommitHorizontal, LineChart, Target } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Bar, BarChart, Radar, RadarChart, PolarAngleAxis, PolarGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
-import { Badge, Card, Progress } from "@/components/ui/primitives";
+import { Badge, Progress } from "@/components/ui/primitives";
 import { useMoonstackStore } from "@/store/moonstack-store";
 
 export function AnalyticsView() {
@@ -52,17 +52,17 @@ export function AnalyticsView() {
     <div className="space-y-5">
       <div className="grid gap-4 lg:grid-cols-4">
         {statCards.map(({ label, value, icon: Icon, tone }) => (
-          <Card key={label} className="p-4">
+          <section key={label} className="pastel-panel rounded-[1.35rem] p-4 transition hover:-translate-y-0.5">
             <Icon className="mb-3 text-white/40" size={18} />
             <div className="text-2xl font-bold">{value}</div>
             <div className="mt-1 text-sm text-white/38">{label}</div>
             <Badge tone={tone}>{label === "DSA Proof" ? "GitHub-ready" : "Live metric"}</Badge>
-          </Card>
+          </section>
         ))}
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
-        <Card className="p-5">
+        <section className="pastel-panel rounded-[1.35rem] p-5">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-2xl font-semibold">Operating System Score</h2>
@@ -81,9 +81,9 @@ export function AnalyticsView() {
               </ResponsiveContainer>
             ) : <div className="h-full rounded-3xl border border-white/[0.06] bg-white/[0.025]" />}
           </div>
-        </Card>
+        </section>
 
-        <Card className="p-5">
+        <section className="pastel-panel rounded-[1.35rem] p-5">
           <div className="mb-5 flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-2xl border border-violet-300/20 bg-violet-300/10 text-violet-200">
               <Brain size={18} />
@@ -104,11 +104,11 @@ export function AnalyticsView() {
               </ResponsiveContainer>
             ) : <div className="h-full rounded-3xl border border-white/[0.06] bg-white/[0.025]" />}
           </div>
-        </Card>
+        </section>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
-        <Card className="p-5 lg:col-span-2">
+        <section className="pastel-panel rounded-[1.35rem] p-5 lg:col-span-2">
           <div className="mb-4 flex items-center gap-2"><LineChart size={18} className="text-emerald-200" /><h3 className="font-semibold">System Breakdown</h3></div>
           <div className="space-y-4">
             {bars.map((item) => (
@@ -118,15 +118,15 @@ export function AnalyticsView() {
               </div>
             ))}
           </div>
-        </Card>
-        <Card className="p-5">
+        </section>
+        <section className="pastel-panel rounded-[1.35rem] p-5">
           <Badge tone="amber">AI-style Insight</Badge>
           <p className="mt-4 text-sm leading-7 text-white/66">{insight}</p>
           <div className="mt-5 rounded-2xl border border-white/[0.06] bg-black/20 p-4 text-sm text-white/50">
             Weakest: <span className="text-amber-200">{weakArea.name}</span><br />
             Strongest: <span className="text-emerald-200">{strongestArea.name}</span>
           </div>
-        </Card>
+        </section>
       </div>
     </div>
   );

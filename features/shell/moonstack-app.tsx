@@ -33,6 +33,7 @@ type MoonstackAppProps = {
 
 export function MoonstackApp({ routeView }: MoonstackAppProps) {
   const setActiveView = useMoonstackStore((state) => state.setActiveView);
+  const theme = useMoonstackStore((state) => state.settings.theme || "dark");
   const activeView = routeView;
   const ActiveView = views[activeView];
 
@@ -41,7 +42,7 @@ export function MoonstackApp({ routeView }: MoonstackAppProps) {
   }, [routeView, setActiveView]);
 
   return (
-    <main className="surface-grid flex min-h-dvh bg-[#07080d] text-white">
+    <main data-theme={theme} className="surface-grid flex min-h-dvh bg-[var(--bg)] text-[var(--text)]">
       <Sidebar />
       <section className="flex min-w-0 flex-1 flex-col">
         <Topbar />

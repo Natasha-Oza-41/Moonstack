@@ -24,6 +24,7 @@ export type AppSettings = {
   displayName?: string;
   linkedinUrl?: string;
   gmail?: string;
+  theme?: "dark" | "light";
   githubProfile: string;
   dsaRepoUrl: string;
   dsaRepoFullName: string;

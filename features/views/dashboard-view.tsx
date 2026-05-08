@@ -31,6 +31,7 @@ export function DashboardView() {
   const done = tasks.filter((task) => task.done).length;
   const solved = dsaProblems.filter((problem) => problem.status === "solved").length;
   const roadmapProgress = Math.round(roadmaps[0].phases.reduce((sum, phase) => sum + phase.progress, 0) / roadmaps[0].phases.length);
+  const todayLabel = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" }).format(new Date());
 
   useEffect(() => setMounted(true), []);
 
@@ -60,7 +61,7 @@ export function DashboardView() {
         <Card className="p-5">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Today’s Focus</h3>
+              <h3 className="font-semibold">{todayLabel}</h3>
               <p className="text-sm text-white/38">Your clean execution list</p>
             </div>
             <Link href={viewRoutes.planner} className="text-emerald-200"><ArrowUpRight size={18} /></Link>

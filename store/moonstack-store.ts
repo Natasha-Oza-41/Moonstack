@@ -294,6 +294,7 @@ export const useMoonstackStore = create<MoonstackState>()(
         displayName: "",
         linkedinUrl: "",
         gmail: "",
+        theme: "dark",
         githubProfile: "",
         dsaRepoUrl: "",
         dsaRepoFullName: "",
